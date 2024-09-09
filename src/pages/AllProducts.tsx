@@ -63,7 +63,7 @@ const AllProducts = () => {
     }
 
     // Handle click product update
-    const handleClickProductUpdate = () => {
+    const handleClickProductCreate = () => {
         const title = titleRef.current;
         const name = nameRef.current;
         const description = descriptionRef.current;
@@ -72,7 +72,6 @@ const AllProducts = () => {
         if(validInputs()) {
             // Create a new product
             createProductsAPI(name!.value, title!.value, description!.value).then(res => {
-                console.log(res);
                 if(res.status === 200) {
                     setIsDialogOpen(false);
                     window.location.reload();
@@ -108,7 +107,7 @@ const AllProducts = () => {
                     titleRef={titleRef}
                     nameRef={nameRef}
                     descriptionRef={descriptionRef}
-                    formAction={handleClickProductUpdate}
+                    formAction={handleClickProductCreate}
                     errorState={errorState}
                 />
             )}

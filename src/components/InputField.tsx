@@ -36,7 +36,7 @@ const InputField = ({label, type, variant, reference, value} : InputFieldProps) 
                 type={type} 
                 ref={reference} 
                 placeholder={label}
-                value={value}
+                defaultValue={value}
                 className={`mb-2 rounded-md shadow-md overflow-hidden p-3 w-full max-w-md border-2 
                     focus:outline-none focus:border-emerald-400 hover:border-emerald-400 ${variantClass}`}
             />

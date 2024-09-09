@@ -2,6 +2,19 @@ import axios, { AxiosResponse } from "axios";
 
 const API_URL = `https://hotel.aotrek.net/api/auth`;
 
+// Define the products interface
+interface Products {
+    id: number;
+    name: string;
+    title: string;
+    description: string;
+}
+
+// Define the response data type interface
+interface ResponseDataType {
+    categories: Products[];
+}
+
 // Define the login API
 export const loginAPI = async <T = never, R = AxiosResponse<T>> (email: string, password: string): Promise<R> => {
     try {
@@ -15,17 +28,6 @@ export const loginAPI = async <T = never, R = AxiosResponse<T>> (email: string, 
     }
 }
 
-interface Products {
-    id: number;
-    name: string;
-    title: string;
-    description: string;
-}
-
-interface ResponseDataType {
-    categories: Products[];
-}
-
 // Define the get all products API
 export const getAllProductsAPI = async <T = ResponseDataType, R = AxiosResponse<T>> (): Promise<R> => {
     try {
@@ -36,7 +38,17 @@ export const getAllProductsAPI = async <T = ResponseDataType, R = AxiosResponse<
         });
         return response as R;
     } catch (error) {
-        return error as R;
+        // Remove the user information from the local storage if the status code is 401
+        if (axios.isAxiosError(error)) {
+            // Remove the user information from the local storage if the status code is 401
+            if (error.response?.status === 401) {
+                localStorage.removeItem('userInformation');
+            }
+            return error as R;
+        } else {
+            // Handle non-Axios errors if necessary
+            throw error;
+        }
     }
 }
 // Define the create products API
@@ -52,7 +64,73 @@ export const createProductsAPI = async <T = never, R = AxiosResponse<T>>(name: s
             }
         })
         return response as R;
-    } catch (err) {
-        return err as R;
+    } catch (error) {
+        // Remove the user information from the local storage if the status code is 401
+        if (axios.isAxiosError(error)) {
+            // Remove the user information from the local storage if the status code is 401
+            if (error.response?.status === 401) {
+                localStorage.removeItem('userInformation');
+            }
+            return error as R;
+        } else {
+            // Handle non-Axios errors if necessary
+            throw error;
+        }
+        return error as R;
+    }
+};
+
+
+// Define the update products API
+export const updateProductsAPI = async <T = never, R = AxiosResponse<T>>(id: number, name: string, title: string, description: string): Promise<R> => {
+    try {
+        const response = await axios.put(`${API_URL}/update/${id}`, {
+            name: name,
+            title: title,
+            description: description
+        }, {
+            headers: {
+                "Authorization": `Bearer ${JSON.parse(localStorage.getItem('userInformation')!).user.token}`
+            }
+        })
+        return response as R;
+    } catch (error) {
+        // Remove the user information from the local storage if the status code is 401
+        if (axios.isAxiosError(error)) {
+            // Remove the user information from the local storage if the status code is 401
+            if (error.response?.status === 401) {
+                localStorage.removeItem('userInformation');
+            }
+            return error as R;
+        } else {
+            // Handle non-Axios errors if necessary
+            throw error;
+        }
+        return error as R;
+    }
+};
+
+
+export const deleteProductsAPI = async <T = never, R = AxiosResponse<T>>(id: number): Promise<R> => {
+    try {
+        const response = await axios.delete(`${API_URL}/delete/${id}`,{
+            headers: {
+                "Authorization": `Bearer ${JSON.parse(localStorage.getItem('userInformation')!).user.token}`
+            }
+        })
+        return response as R;
+    } catch (error) {
+        // Remove the user information from the local storage if the status code is 401
+        if (axios.isAxiosError(error)) {
+            // Remove the user information from the local storage if the status code is 401
+            if (error.response?.status === 401) {
+                localStorage.removeItem('userInformation');
+            }
+            return error as R;
+        } else {
+            // Handle non-Axios errors if necessary
+            throw error;
+        }
+        return error as R;
     }
 };
