@@ -39,3 +39,20 @@ export const getAllProductsAPI = async <T = ResponseDataType, R = AxiosResponse<
         return error as R;
     }
 }
+// Define the create products API
+export const createProductsAPI = async <T = never, R = AxiosResponse<T>>(name: string, title: string, description: string): Promise<R> => {
+    try {
+        const response = await axios.post(`${API_URL}/create`, {
+            name: name,
+            title: title,
+            description: description
+        }, {
+            headers: {
+                "Authorization": `Bearer ${JSON.parse(localStorage.getItem('userInformation')!).user.token}`
+            }
+        })
+        return response as R;
+    } catch (err) {
+        return err as R;
+    }
+};

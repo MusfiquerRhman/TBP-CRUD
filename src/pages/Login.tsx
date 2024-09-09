@@ -25,36 +25,33 @@ const Login = () => {
     const passwordRef = useRef<InputRefProp>(null);
 
     // Validate email and password inputs
-    const validateInputs = (emailInp: InputRefProp, passwordInp: InputRefProp ) : boolean => {
-        let email = false;
-        let password = false;
-        // Check if email or password is null
-        if (emailInp == null || passwordInp == null) {
-            setErrorState({ email: "error", password: "error" });
+    const validateInputs = () : boolean => {
+        let emailIsValid = false;
+        let passwordIsValid = false;
+        
+
+        // Check if email is valid
+        if(emailRef.current && (/^\w+([.-/+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(emailRef.current.value))) {
+            emailIsValid = true;
+
+            // Set the email input field to default
+            setErrorState(prevState => ({ ...prevState, email: "default" })); 
+        } else {
+            // Set the email input field to error
+            setErrorState(prevState => ({ ...prevState, email: "error" })); 
         }
-        else {
-            // Check if email is valid 
-            if (!(/^\w+([.-/+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(emailInp.value))) {
-                // Set email variant to error if email is invalid
-                setErrorState(prevState => ({ ...prevState, email: "error" })); 
-            }
-            else {
-                // Set email variant to default if email is valid
-                email = true;
-                setErrorState(prevState => ({ ...prevState, email: "default" })); 
-            }
-            // Check if password is valid
-            if (passwordInp.value.length < 8) {
-                // Set password variant to error if password is invalid
-                setErrorState(prevState => ({ ...prevState, password: "error" })); 
-            }
-            else {
-                // Set password variant to default if password is valid
-                password = true;
-                setErrorState(prevState => ({ ...prevState, password: "default" })); 
-            }
+
+        // Check if password is valid
+        if(passwordRef.current && passwordRef.current.value.length >= 8) {
+            passwordIsValid = true;
+            // Set the password input field to default
+            setErrorState(prevState => ({ ...prevState, password: "default" })); 
+        } else {
+            // Set the password input field to error
+            setErrorState(prevState => ({ ...prevState, password: "error" })); 
         }
-        return email && password;
+
+        return emailIsValid && passwordIsValid;
     }
 
     // Handle submit login form
@@ -63,16 +60,13 @@ const Login = () => {
         setIsDisabled(true);
 
         // Get email and password input fields
-        const emailInp = emailRef.current;
-        const passwordInp = passwordRef.current;
-
-        // Validate email and password
-        const isValid = validateInputs(emailInp, passwordInp);
+        const email = emailRef.current;
+        const password = passwordRef.current;
 
         // If email and password are valid, send request to login API
-        if(isValid) {
+        if(validateInputs()) {
             try{
-                const response = await loginAPI(emailInp!.value, passwordInp!.value);
+                const response = await loginAPI(email!.value, password!.value);
                 if (response.status === 200) {
                     // Set user information to local storage
                     localStorage.setItem('userInformation', JSON.stringify(response.data))

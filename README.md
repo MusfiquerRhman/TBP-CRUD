@@ -13,6 +13,6 @@
 ### TODO
  - [x] Login
  - [x] Get all product
- - [ ] Create product
+ - [x] Create product
  - [ ] Update product
  - [ ] delete product

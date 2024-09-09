@@ -19,7 +19,6 @@ const ShowAllProducts = () => {
         
         // Fetch all products
         getAllProductsAPI().then((res) => {
-            console.log(res);
             setProducts(res.data.categories);
         }).catch((err) => {
             console.log(err);

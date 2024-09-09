@@ -6,6 +6,7 @@ interface InputFieldProps {
     type: string,
     variant?: string,
     reference: MutableRefObject<HTMLInputElement | null>
+    value?: string | number | readonly string[] | undefined
 }
 
 // Define the variant styles for the input field
@@ -14,7 +15,7 @@ const variants = {
     error: 'border-red-500',
 }
 
-const InputField = ({label, type, variant, reference} : InputFieldProps) => {
+const InputField = ({label, type, variant, reference, value} : InputFieldProps) => {
     // Get the variant style for the input field
     const getVariant = (variant: string) => { 
         if(variant === 'error')
@@ -35,6 +36,7 @@ const InputField = ({label, type, variant, reference} : InputFieldProps) => {
                 type={type} 
                 ref={reference} 
                 placeholder={label}
+                value={value}
                 className={`mb-2 rounded-md shadow-md overflow-hidden p-3 w-full max-w-md border-2 
                     focus:outline-none focus:border-emerald-400 hover:border-emerald-400 ${variantClass}`}
             />
