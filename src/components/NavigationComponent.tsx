@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 import Heading from './Heading';
 
-const NavigationComponent = ({ children, title }: { children: React.ReactNode, title: string}) => {
+const NavigationComponent = ({ children, title }: { children: Readonly<React.ReactNode>, title: string}) => {
     const navigate = useNavigate();
     return (
         <div className='mx-4 my-10 flex flex-col gap-8 items-center'>

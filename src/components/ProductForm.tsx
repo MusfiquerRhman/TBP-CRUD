@@ -5,13 +5,7 @@ import ErrorText from './ErrorText';
 import Heading from './Heading';
 import InputField from './InputField';
 
-type InputRefProp = HTMLInputElement | null;
-
-interface ErrorState {
-    name: string;
-    title: string;
-    description: string;
-}
+import type { ErrorStateProducts, InputRefProp } from '../types/types';
 
 interface DialogProps {
     setIsDialogOpen?: Dispatch<SetStateAction<boolean>>;
@@ -25,7 +19,7 @@ interface DialogProps {
     };
     type: string,
     formAction: () => void
-    errorState: ErrorState
+    errorState: ErrorStateProducts
 }
 
 const ProductForm = (
