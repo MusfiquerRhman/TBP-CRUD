@@ -1,12 +1,14 @@
-import { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import Button from './Button';
 
+// Define the props for the ConfirmationPopup component
 interface DialogProps {
     label: string;
     setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
     formAction: () => void
 }
 
+// Define the ConfirmationPopup component to confirm the action before deleting
 const ConfirmationPopup = ({label, setIsDialogOpen, formAction}: DialogProps) => {
     return (
         <div className='fixed inset-0 h-screen w-screen backdrop-blur-md p-2' onClick={() => setIsDialogOpen(false)}>
@@ -30,4 +32,5 @@ const ConfirmationPopup = ({label, setIsDialogOpen, formAction}: DialogProps) =>
     )
 }
 
-export default ConfirmationPopup
+// Using memo to prevent unnecessary rerender
+export default React.memo(ConfirmationPopup)

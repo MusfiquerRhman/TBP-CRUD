@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AllProducts, LoginPage } from './pages';
+import { AllProducts, Create, Delete, LoginPage, Update } from './pages';
 
 const isAuthenticated = () => {
   const localData = localStorage.getItem('userInformation');
@@ -17,10 +17,14 @@ function App() {
       {isLoggedIn ? (
         <Routes>
           <Route path="/" element={<AllProducts />} />
+          <Route path="/create" element={<Create />} />
+          <Route path="/update" element={<Update />} />
+          <Route path="/delete" element={<Delete />} />
         </Routes>
       ) : (
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="*" element={<LoginPage />} />
         </Routes>
       )}
     </BrowserRouter>

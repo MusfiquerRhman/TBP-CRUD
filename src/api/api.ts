@@ -1,14 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, isAxiosError } from "axios";
+
+import type { Products } from "../types/types";
 
 const API_URL = `https://hotel.aotrek.net/api/auth`;
-
-// Define the products interface
-interface Products {
-    id: number;
-    name: string;
-    title: string;
-    description: string;
-}
 
 // Define the response data type interface
 interface ResponseDataType {
@@ -38,8 +32,7 @@ export const getAllProductsAPI = async <T = ResponseDataType, R = AxiosResponse<
         });
         return response as R;
     } catch (error) {
-        // Remove the user information from the local storage if the status code is 401
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
             // Remove the user information from the local storage if the status code is 401
             if (error.response?.status === 401) {
                 localStorage.removeItem('userInformation');
@@ -47,7 +40,7 @@ export const getAllProductsAPI = async <T = ResponseDataType, R = AxiosResponse<
             return error as R;
         } else {
             // Handle non-Axios errors if necessary
-            throw error;
+            return error as R;
         }
     }
 }
@@ -65,8 +58,7 @@ export const createProductsAPI = async <T = never, R = AxiosResponse<T>>(name: s
         })
         return response as R;
     } catch (error) {
-        // Remove the user information from the local storage if the status code is 401
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
             // Remove the user information from the local storage if the status code is 401
             if (error.response?.status === 401) {
                 localStorage.removeItem('userInformation');
@@ -74,9 +66,8 @@ export const createProductsAPI = async <T = never, R = AxiosResponse<T>>(name: s
             return error as R;
         } else {
             // Handle non-Axios errors if necessary
-            throw error;
+            return error as R;
         }
-        return error as R;
     }
 };
 
@@ -95,8 +86,7 @@ export const updateProductsAPI = async <T = never, R = AxiosResponse<T>>(id: num
         })
         return response as R;
     } catch (error) {
-        // Remove the user information from the local storage if the status code is 401
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
             // Remove the user information from the local storage if the status code is 401
             if (error.response?.status === 401) {
                 localStorage.removeItem('userInformation');
@@ -104,9 +94,8 @@ export const updateProductsAPI = async <T = never, R = AxiosResponse<T>>(id: num
             return error as R;
         } else {
             // Handle non-Axios errors if necessary
-            throw error;
+            return error as R;
         }
-        return error as R;
     }
 };
 
@@ -120,8 +109,7 @@ export const deleteProductsAPI = async <T = never, R = AxiosResponse<T>>(id: num
         })
         return response as R;
     } catch (error) {
-        // Remove the user information from the local storage if the status code is 401
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
             // Remove the user information from the local storage if the status code is 401
             if (error.response?.status === 401) {
                 localStorage.removeItem('userInformation');
@@ -129,8 +117,7 @@ export const deleteProductsAPI = async <T = never, R = AxiosResponse<T>>(id: num
             return error as R;
         } else {
             // Handle non-Axios errors if necessary
-            throw error;
+            return error as R;
         }
-        return error as R;
     }
 };

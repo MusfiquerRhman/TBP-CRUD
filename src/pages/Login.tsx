@@ -1,19 +1,11 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { loginAPI } from '../api/api';
 import { Button, ErrorText, Heading, InputField } from '../components';
 
-// Define the HTML input element ref prop
-type InputRefProp = HTMLInputElement | null;
-
-// Define the error state interface
-interface ErrorState {
-    email: string;
-    password: string;
-    global?: string;
-}
+import type { ErrorStateUsers, InputRefProp } from '../types/types';
 
 const Login = () => {
-    const [errorState, setErrorState] = useState<ErrorState>({ 
+    const [errorState, setErrorState] = useState<ErrorStateUsers>({ 
         email: 'default', 
         password: 'default', 
         global: "" 
@@ -55,7 +47,7 @@ const Login = () => {
     }
 
     // Handle submit login form
-    const handleSubmitLoginForm = async () => {
+    const handleSubmitLoginForm = useCallback(async () => {
         // Disable the submit button
         setIsDisabled(true);
 
@@ -86,7 +78,7 @@ const Login = () => {
 
         // Enable the submit button
         setIsDisabled(false);
-    }
+    }, []);
 
     return (
         <div className='flex justify-center items-center h-screen flex-col gap-2 m-4'>

@@ -34,8 +34,11 @@ const Button = ({label, onClick, isDisabled, variant, className}: ButtonProps) =
         <button type="submit"
             onClick={onClick}
             disabled={isDisabled}
-            className={`mb-2 rounded-md shadow-md p-1 lg:p-2 w-full border-2 mt-4 disabled:bg-stone-100 bg-white
-                focus:outline-none focus:border-emerald-400 hover:border-emerald-400 outline-none ${variantClass} ${className}`}
+            className={
+                `mb-2 rounded-md shadow-md p-1 lg:p-2 w-full border-2 mt-4 disabled:bg-stone-100 bg-white
+                focus:outline-none focus:border-emerald-400 hover:border-emerald-400 outline-none 
+                ${variantClass} ${className}`
+            }
         >
             <span className="text-lg text-bold">{isDisabled ? "Please Wait" : label}</span>
         </button>

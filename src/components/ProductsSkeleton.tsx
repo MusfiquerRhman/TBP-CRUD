@@ -1,5 +1,6 @@
 import React from "react"
 
+// ProductsSkeleton component to show loading state of products
 const ProductsSkeleton = () => {
     return (
         <div className='min-w-72 flex-1 max-w-80 text-center px-4 py-10 shadow-md min-h-72 flex justify-center flex-col rounded-md bg-white animate-pulse'>

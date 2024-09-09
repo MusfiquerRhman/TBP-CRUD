@@ -1,32 +1,21 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deleteProductsAPI, getAllProductsAPI, updateProductsAPI } from "../api/api";
 import Button from "./Button";
 import ConfirmationPopup from "./ConfirmationPopup";
 import ProductForm from "./ProductForm";
 
-export interface Products {
-    id: number;
-    name: string;
-    title: string;
-    description: string;
-}
+import type { ErrorStateProducts, InputRefProp, Products } from "../types/types";
 
-// Define the HTML input element ref prop
-type InputRefProp = HTMLInputElement | null;
+const ShowAllProducts = ({ isUpdate, isDelete } : {isUpdate?: boolean, isDelete?: boolean}) => {
+    const navigate = useNavigate();
 
-// Define the error state interface
-interface ErrorState {
-    name: string;
-    title: string;
-    description: string;
-}
-
-const ShowAllProducts = () => {
-    const [products, setProducts] = useState<Products[]>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [products, setProducts] = useState<Products[]>();
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
     const [deleteProductInfo, setDeleteProductInfo] = useState<Products>();
+    
     const [value, setValue] = useState({
         id: -1,
         title: "",
@@ -35,7 +24,7 @@ const ShowAllProducts = () => {
     });
 
     // Define the error state
-    const [errorState, setErrorState] = useState<ErrorState>({ 
+    const [errorState, setErrorState] = useState<ErrorStateProducts>({ 
         name: 'default', 
         title: 'default', 
         description: "default" 
@@ -63,6 +52,7 @@ const ShowAllProducts = () => {
         }
     }, []);
 
+    
     // Validate the input fields
     const validInputs = () => {
         let titleIsValid = false;
@@ -70,74 +60,81 @@ const ShowAllProducts = () => {
         let descriptionIsValid = false;
 
         // Check if title is valid
-        if(titleRef.current && titleRef.current.value !== "") {
+        if (titleRef.current && titleRef.current.value !== "") {
             titleIsValid = true;
-            setErrorState(prevState => ({ ...prevState, title: "default" })); 
+            setErrorState(prevState => ({ ...prevState, title: "default" }));
         } else {
-            setErrorState(prevState => ({ ...prevState, title: "error" })); 
+            setErrorState(prevState => ({ ...prevState, title: "error" }));
         }
 
         // Check if name is valid
-        if(nameRef.current && nameRef.current.value !== "") {
+        if (nameRef.current && nameRef.current.value !== "") {
             nameIsValid = true;
-            setErrorState(prevState => ({ ...prevState, name: "default" })); 
+            setErrorState(prevState => ({ ...prevState, name: "default" }));
         } else {
-            setErrorState(prevState => ({ ...prevState, name: "error" })); 
+            setErrorState(prevState => ({ ...prevState, name: "error" }));
         }
 
         // Check if description is valid
-        if(descriptionRef.current && descriptionRef.current.value !== "") {
+        if (descriptionRef.current && descriptionRef.current.value !== "") {
             descriptionIsValid = true;
-            setErrorState(prevState => ({ ...prevState, description: "default" })); 
+            setErrorState(prevState => ({ ...prevState, description: "default" }));
         } else {
-            setErrorState(prevState => ({ ...prevState, description: "error" })); 
+            setErrorState(prevState => ({ ...prevState, description: "error" }));
         }
 
         return titleIsValid && nameIsValid && descriptionIsValid
     }
 
-    const handleClickProductUpdate = (product: Products) => {
-        setIsDialogOpen(true);
+    // Handle click product update
+    // useCallback is used to prevent unnecessary rerender
+    const updateProduct = useCallback(() => {
+        const title = titleRef.current!.value;
+        const name = nameRef.current!.value;
+        const description = descriptionRef.current!.value;
+        
+        // Check if the input fields are valid
+        if(validInputs()) {
+            updateProductsAPI(value.id ,name, title, description).then(res => {
+                if(res.status === 200) {
+                    setIsDialogOpen(false);
+                    navigate('/')
+                }
+            });
+            setIsDialogOpen(false);
+        }
+    }, [navigate, value.id]);
 
+    // Handle click product update 
+    // useCallback is used to prevent unnecessary rerender
+    const handleClickProductUpdate = useCallback((product: Products) => {
         setValue({
             id: product.id,
             name: product.name,
             title: product.title,
             description: product.description
         })
-    }
 
-    const updateProduct = () => {
-        const title = titleRef.current!.value;
-        const name = nameRef.current!.value;
-        const description = descriptionRef.current!.value;
-        
+        setIsDialogOpen(true);
+    }, []);
 
-        // Check if the input fields are valid
-        if(validInputs()) {
-            updateProductsAPI(value.id ,name, title, description).then(res => {
-                if(res.status === 200) {
-                    setIsDialogOpen(false);
-                    window.location.reload();
-                }
-            });
-            setIsDialogOpen(false);
-        }
-    }
-
-    const handleClickDeleteProduct = (product: Products) => {
+    // Handle click delete product
+    // useCallback is used to prevent unnecessary rerender
+    const handleClickDeleteProduct = useCallback((product: Products) => {
         setIsDeleteConfirmationOpen(true);
         setDeleteProductInfo(product);
-    }
+    }, []);
 
-    const deleteProduct = () => {
+    // Handle delete product
+    // useCallback is used to prevent unnecessary rerender
+    const deleteProduct = useCallback(() => {
         deleteProductsAPI(deleteProductInfo!.id).then(res => {
             if(res.status === 200) {
                 setIsDialogOpen(false);
-                window.location.reload();
+                navigate('/')
             }
         });
-    }
+    }, [deleteProductInfo, navigate]);
 
     return (
         <>
@@ -147,8 +144,8 @@ const ShowAllProducts = () => {
                     <h2 className='text-slate-600'>{product.name}</h2>
                     <p className='text-wrap'>{product.description}</p>
                     <div className='flex flex-row gap-2'>
-                        <Button label="Update" onClick={() => handleClickProductUpdate(product)} variant='action' />
-                        <Button label="Delete" onClick={() => handleClickDeleteProduct(product)} variant="warning" />
+                        {isUpdate && <Button label="Update" onClick={() => handleClickProductUpdate(product)} variant='action' />}
+                        {isDelete && <Button label="Delete" onClick={() => handleClickDeleteProduct(product)} variant="warning" />}
                     </div>
                 </div>
             ))}
@@ -176,4 +173,4 @@ const ShowAllProducts = () => {
     )
 }
 
-export default ShowAllProducts
+export default React.memo(ShowAllProducts)

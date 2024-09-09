@@ -1,4 +1,5 @@
 import React, { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 import ErrorText from './ErrorText';
 import Heading from './Heading';
@@ -13,7 +14,7 @@ interface ErrorState {
 }
 
 interface DialogProps {
-    setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
+    setIsDialogOpen?: Dispatch<SetStateAction<boolean>>;
     titleRef: MutableRefObject<InputRefProp>;
     nameRef: MutableRefObject<InputRefProp>;
     descriptionRef: MutableRefObject<InputRefProp>;
@@ -30,9 +31,13 @@ interface DialogProps {
 const ProductForm = (
     {setIsDialogOpen, titleRef, nameRef, descriptionRef, values, type, formAction, errorState}: DialogProps
 ) => {
+    const navigate = useNavigate();
     return (
-        <div className='fixed inset-0 h-screen w-screen backdrop-blur-md p-2' onClick={() => setIsDialogOpen(false)}>
-            <p className='text-center text-slate-500 mt-12 text-lg'>Click Anywhere to close</p>
+        <div className='fixed inset-0 h-screen w-screen backdrop-blur-md p-2' onClick={
+            setIsDialogOpen ? () => setIsDialogOpen(false) : () => {return;}
+        }>
+            {type === 'Update' && <p className='text-center text-slate-500 mt-12 text-lg'>Click Anywhere to close</p>}
+
             <dialog
                 className='fixed inset-0 bg-white p-4 shadow-md rounded-md flex flex-col w-full sm:max-w-sm justify-center items-center'
                 onClick={(e) => e.stopPropagation()}
@@ -73,9 +78,10 @@ const ProductForm = (
                     variant='action' 
                 />
                 <Button label="Cancel" 
-                    onClick={() => setIsDialogOpen(false)} 
+                    onClick={
+                        setIsDialogOpen ? () => setIsDialogOpen(false) : () => {navigate('/')}
+                    } 
                     variant='warning' 
-                    className='md:hidden'
                 />
             </dialog>
         </div>
